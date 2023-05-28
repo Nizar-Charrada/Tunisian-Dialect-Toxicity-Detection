@@ -1,7 +1,7 @@
 # Tunisian Dialect Toxicity Detection
 **Note: This AI model is part of a larger project, which is a browser extension aimed at filtering social media content.**
 
-![TUNToxic](docs/TUN.png)
+![TUNToxic](TUN.png)
 The Tunisian Dialect Toxicity Detection project aims to develop a reliable and efficient system for detecting toxic or offensive language in Tunisian dialect text. The goal is to provide a comprehensive solution that can identify and flag harmful content, promoting safer online communication in the Tunisian dialect.
 ### Description
 This project focuses on building a machine learning model capable of analyzing text data in the Tunisian dialect and determining if it contains toxic or offensive content. The model is trained on a labeled dataset comprising various types of toxic language commonly found in online platforms.
