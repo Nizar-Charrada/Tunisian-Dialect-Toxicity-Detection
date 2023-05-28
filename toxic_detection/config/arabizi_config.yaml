@@ -1,0 +1,76 @@
+# Config file for text classification with pre-trained BERT models
+# Note: not all the parameters are used in the code, but they are here for future use
+
+knowledge_distillation: 
+  enabled: true
+  teacher_model:
+    checkpoint_path: toxic_detection/out
+  student_model:
+    embedding_size: 1024
+    hidden_size: 512
+    kernel_size: 3
+    add_conv_layer: false
+    lr : 3.0e-4
+    weight_decay: 0.01
+  alpha: 0.5
+
+trainer:
+  max_epochs: 4
+  max_steps: null # precedence over max_epochs
+  accumulate_grad_batches: 1 # accumulates grads every k batches
+  gradient_clip_val: 1.0 # 0 means don't clip.
+  row_log_interval: 300  # Interval of logging.
+  resume_from_checkpoint: null # The path to a checkpoint file to continue the training
+
+model:
+  tokenizer:
+      tokenizer_name: ziedsb19/tunbert_zied
+      max_length: 511
+      vocab_file: null # path to vocab file
+      special_tokens: null
+
+  language_model:
+    num_labels: 1
+    model_type: roberta
+    model_name_or_path: ziedsb19/tunbert_zied
+    config_name: ziedsb19/tunbert_zied
+    lm_checkpoint: ziedsb19/tunbert_zied
+    
+  classifier_head:
+    num_output_layers: 1
+    fc_dropout: 0.1
+
+train_ds:
+  file_path: toxic_detection\data\arabizi\train.csv
+  batch_size: 32
+  shuffle: true
+  num_samples: -1 # number of samples to be considered, -1 means all the dataset
+  # Default values for the following params are retrieved from dataset config section, but you may override them
+  drop_last: false
+  pin_memory: false
+
+validation_ds:
+  file_path: toxic_detection\data\arabizi\valid.csv
+  batch_size: 64
+  shuffle: true
+  num_samples: -1 # number of samples to be considered, -1 means all the dataset
+  # Default values for the following params are retrieved from dataset config section, but you may override them
+  drop_last: false
+
+optim:
+  name: adamW
+  lr: 5.0e-5
+  # optimizer arguments
+  betas: [0.9, 0.999]
+  weight_decay: 0.01
+
+stop_words_path : toxic_detection/data/arabizi/stop_words.txt
+output_dir: toxic_detection/out
+seed: 2021
+
+# Other parameters
+save_model: true
+load_model: false
+show_report: false
+
+

@@ -1,0 +1,6 @@
+toxic_detection/data/checkpoint/PretrainingBERTFromText--end.ckpt
+toxic_detection/out/*
+transliteration/out/*
+*__pycache__*
+.vscode/
+

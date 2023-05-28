@@ -1,0 +1,87 @@
+# Config file for text classification with pre-trained BERT models
+# Note: not all the parameters are used in the code, but they are here for future use
+
+knowledge_distillation: 
+  enabled: true
+  teacher_model:
+    checkpoint_path: toxic_detection/out
+  student_model:
+    embedding_size: 1024
+    hidden_size: 512
+    kernel_size: 3
+    add_conv_layer: true
+    lr : 3.0e-4
+    weight_decay: 0.00
+    
+  alpha: 0.5
+ 
+
+trainer:
+  max_epochs: 4
+  max_steps: null # precedence over max_epochs
+  accumulate_grad_batches: 1 # accumulates grads every k batches
+  gradient_clip_val: 1.0 # 0 means don't clip.
+  row_log_interval: 300  # Interval of logging.
+  resume_from_checkpoint: toxic_detection\data\checkpoint\PretrainingBERTFromText--end.ckpt # The path to a checkpoint file to continue the training, restores the whole state including the epoch, step, LR schedulers, apex, etc.
+
+model:
+  tokenizer:
+      tokenizer_name: bert-base-uncased 
+      max_length: 128  
+      vocab_file: null # path to vocab file
+      special_tokens: null
+
+  language_model:
+    num_labels: 1 # number of labels
+    model_type: bert 
+    model_name_or_path: bert-base-uncased 
+    config_name: bert-base-uncased 
+    lm_checkpoint: toxic_detection\data\checkpoint\PretrainingBERTFromText--end.ckpt # path to the checkpoint file of the pre-trained language model
+    
+  classifier_head:
+    num_output_layers: 1
+    fc_dropout: 0.1
+
+train_ds:
+  file_path: toxic_detection\data\arabic\train.csv
+  batch_size: 32
+  shuffle: true
+  num_samples: -1 # number of samples to be considered, -1 means all the dataset
+  # Default values for the following params are retrieved from dataset config section, but you may override them
+  drop_last: false
+  pin_memory: false
+
+validation_ds:
+  file_path: toxic_detection\data\arabic\valid.csv
+  batch_size: 64
+  shuffle: true
+  num_samples: -1 # number of samples to be considered, -1 means all the dataset
+  # Default values for the following params are retrieved from dataset config section, but you may override them
+  drop_last: false
+
+optim:
+  name: adam
+  lr: 2.0e-5
+  # optimizer arguments
+  betas: [0.9, 0.999]
+  weight_decay: 0.00
+
+  # scheduler setup
+  sched:
+    name: WarmupAnnealing
+    # Scheduler params
+    warmup_steps: null
+    warmup_ratio: 0.1
+    last_epoch: -1
+
+
+stop_words_path : toxic_detection/data/arabic/stop_words.txt
+output_dir: toxic_detection/out
+seed: 2021
+
+# Other parameters
+save_model: true
+load_model: false
+show_report: false
+
+
