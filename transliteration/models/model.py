@@ -31,7 +31,7 @@ class TransformerConfig:
     src_vocab_size: int = 13000
     tgt_vocab_size: int = 13000
     hidden_dim: int = 128
-    encoder_layers: int = 1  # GPT-2 vocab_size of 50257, padded up to nearest multiple of 64 for efficiency
+    encoder_layers: int = 1  
     decoder_layers: int = 1
     dropout: int = 0.15
     nheads: int = 4

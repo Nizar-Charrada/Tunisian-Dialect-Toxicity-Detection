@@ -6,6 +6,7 @@ import argparse
 import re
 import pyarabic.araby as araby
 
+
 def set_seed(seed):
     """Set seed for reproducibility."""
     random.seed(seed)
@@ -14,9 +15,6 @@ def set_seed(seed):
     torch.cuda.manual_seed_all(seed)
 
     os.environ["PYTHONHASHSEED"] = str(seed)
-
-    torch.backends.cudnn.deterministic = True
-    torch.backends.cudnn.benchmark = False
 
 
 class TrainState:

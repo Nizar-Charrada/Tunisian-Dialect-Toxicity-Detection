@@ -1,6 +1,7 @@
 import re
 import os
 import sys
+
 PARENT_DIR = os.path.abspath(os.path.join(os.getcwd()))
 sys.path.append(PARENT_DIR)
 
@@ -8,36 +9,41 @@ import pyarabic.araby as araby
 import pyarabic.trans as trans
 from unidecode import unidecode
 import itertools
-from   transliteration.dataloader.mapping import mapping
+from transliteration.dataloader.mapping import mapping
 import pandas as pd
 
 
 def remove_emoji(text):
-    #remove emoji from text
-    emoji_pattern = re.compile("["
-                                   u"\U0001F600-\U0001F64F"  # emoticons
-                                   u"\U0001F300-\U0001F5FF"  # symbols & pictographs
-                                   u"\U0001F680-\U0001F6FF"  # transport & map symbols
-                                   u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
-                                   u"\U00002702-\U000027B0"
-                                   u"\U000024C2-\U0001F251"
-                                   "]+", flags=re.UNICODE)
-    text = emoji_pattern.sub(r'', text)
+    # remove emoji from text
+    emoji_pattern = re.compile(
+        "["
+        "\U0001F600-\U0001F64F"  # emoticons
+        "\U0001F300-\U0001F5FF"  # symbols & pictographs
+        "\U0001F680-\U0001F6FF"  # transport & map symbols
+        "\U0001F1E0-\U0001F1FF"  # flags (iOS)
+        "\U00002702-\U000027B0"
+        "\U000024C2-\U0001F251"
+        "]+",
+        flags=re.UNICODE,
+    )
+    text = emoji_pattern.sub(r"", text)
     return text
-  
+
+
 def clean_tweet(text):
-    text = re.sub('#\d+K\d+', ' ', text)  # years like 2K19
-    text = re.sub('http\S+\s*', ' ', text)  # remove URLs
-    text = re.sub('RT|cc', ' ', text)  # remove RT and cc
-    text = re.sub('@[^\s]+',' ',text)
+    text = re.sub("#\d+K\d+", " ", text)  # years like 2K19
+    text = re.sub("http\S+\s*", " ", text)  # remove URLs
+    text = re.sub("RT|cc", " ", text)  # remove RT and cc
+    text = re.sub("@[^\s]+", " ", text)
     text = clean_hashtag(text)
 
     return text
 
+
 def split_hashtag_to_words(tag):
     # split tag to words exemple : #i_like_you -> ['i', 'like', 'you']
-    tag = tag.replace('#','')
-    tags = tag.split('_')       
+    tag = tag.replace("#", "")
+    tags = tag.split("_")
     return tags
 
 
@@ -51,37 +57,40 @@ def clean_hashtag(text):
             text.append(word)
     return " ".join(text)
 
+
 def is_hashtag(word):
     if word.startswith("#"):
         return True
     else:
         return False
-    
+
 
 def extract_hashtag(text):
-    
-    hash_list = ([re.sub(r"(\W+)$", "", i) for i in text.split() if i.startswith("#")])
+    hash_list = [re.sub(r"(\W+)$", "", i) for i in text.split() if i.startswith("#")]
     word_list = []
-    for word in hash_list :
+    for word in hash_list:
         word_list.extend(split_hashtag_to_words(word))
     return word_list
 
-def remove_num(text):
-  
-  text_list = re.findall(r"[\w']+|[?!.,]", text)
-  
-  for i in range(len(text_list)):
-    if text_list[i].isnumeric():
-      text_list[i] = ''
 
-  return " ".join(text_list).strip()
+def remove_num(text):
+    text_list = re.findall(r"[\w']+|[?!.,]", text)
+
+    for i in range(len(text_list)):
+        if text_list[i].isnumeric():
+            text_list[i] = ""
+
+    return " ".join(text_list).strip()
+
 
 def preprocess(text):
     text = split_arabic_latin(text)
     ## Remove punctuations
-    text = re.sub('[%s]' % re.escape("""!"#$%&'()*+,،-./:;<=>؟?@[\]^_`{|}~"""), ' ', text)  # remove punctuation
+    text = re.sub(
+        "[%s]" % re.escape("""!"#$%&'()*+,،-./:;<=>؟?@[\]^_`{|}~"""), " ", text
+    )  # remove punctuation
     ## remove extra whitespace
-    text = re.sub('\s+', ' ', text)  
+    text = re.sub("\s+", " ", text)
     ## Remove Emojis
     text = remove_emoji(text)
     ## Convert text to lowercases
@@ -90,7 +99,7 @@ def preprocess(text):
     text = clean_tweet(text)
     text = remove_num(text)
 
-    text = text.replace("x000d","")
+    text = text.replace("x000d", "")
     return text
 
 
@@ -103,7 +112,7 @@ def preprocess_arabizi(word):
     word = word.replace("0", "")
     word = word.replace("6", "")
     word = word.lower()
-    word = my_unidecode(word)  # Remove accents
+    # word = my_unidecode(word)  # Remove accents
     # Remove '@name'
     word = re.sub(r"(@.*?)[\s]", " ", word)
     # Replace '&amp;' with '&'
@@ -142,17 +151,19 @@ def preprocess_arabic(word):
     word = "".join(
         mapping.get(c, c) for c in word
     )  # Replace arabic non general characters exemple: 'ء' -> 'ا'
-    word = "".join(
-        char for char, _ in itertools.groupby(word)
-    )  # Remove repeating characters
-    
+    # word = "".join(
+    #    char for char, _ in itertools.groupby(word)
+    # )  # Remove repeating characters
+
     return word
+
 
 def preprocess_data(data):
     data["arabic"] = data["arabic"].apply(preprocess_arabic)
     data["arabizi"] = data["arabizi"].apply(preprocess_arabizi)
 
     return data
+
 
 def get_data():
     """Get data from csv and excel files and preprocess it.
@@ -176,6 +187,7 @@ def get_data():
 
     return data
 
+
 def my_unidecode(text):
     # Split the text into words using whitespace as the delimiter
     words = re.split(r"\s+", text)
@@ -191,7 +203,7 @@ def my_unidecode(text):
             for match in arabic_chars.finditer(word):
                 placeholder = f"_ARABIC_{len(placeholders)}_"
                 placeholders[placeholder] = match.group()
-                word = word[:match.start()] + placeholder + word[match.end():]
+                word = word[: match.start()] + placeholder + word[match.end() :]
 
             # Transliterate the word using unidecode
             word = unidecode(word)
@@ -208,6 +220,7 @@ def my_unidecode(text):
     # Join the words back together with spaces
     return " ".join(result_words)
 
+
 def split_arabic_latin(text):
     # Split the text into groups of Arabic and non-Arabic characters
     arabic_chars = re.compile(r"[\u0600-\u06FF]+")
@@ -217,7 +230,7 @@ def split_arabic_latin(text):
         match = arabic_chars.match(text) or latin_chars.match(text)
         if match:
             groups.append(match.group())
-            text = text[len(match.group()):]
+            text = text[len(match.group()) :]
         else:
             raise ValueError(f"Invalid character: {text[0]}")
 

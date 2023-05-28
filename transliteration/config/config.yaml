@@ -1,25 +1,20 @@
 # Config file for transliteration with simple transformer model
 
 seed : 1 # random seed
-source: arabizi # source language
-target: arabic # target language
+source: arabic # source language
+target: arabizi # target language
 
 PAD_token : 0
 SOS_token : 1
 EOS_token : 2
 
 trainer:
-  max_epochs: 100 # number of epochs
+  max_epochs: 40 # number of epochs
   max_steps: null # precedence over max_epochs
   accumulate_grad_batches: 1 # accumulates grads every k batches
   gradient_clip_val: 1.0 # 0 means don't clip.
   row_log_interval: 50  # Interval of logging.
   test_size: 0.1 # test size
-  
-tokenizer:
-    max_length: 128  
-    vocab_file: null # path to vocab file
-    special_tokens: null
 
 transformer:
   src_vocab_size : 13000
@@ -43,12 +38,9 @@ optim:
 
 
 output_dir: transliteration/out
-seed: 2021
 
 # Other parameters
-save_model: True
-load_model: false
-show_report: false
+load_model: False
 
 
 

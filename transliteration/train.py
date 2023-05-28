@@ -51,7 +51,7 @@ class Lang:
                 self.nchars += 1
 
     def tokenize(self, sentence, is_target=False):
-        if is_target:
+        if self.is_target:
             return (
                 [1] + [self.char2index[word] for word in sentence.lower()] + [2]
             )  # 1 is SOS and 2 is EOS
@@ -147,10 +147,9 @@ def training(config):
 
     if config.load_model:
         checkpoint = torch.load(
-            os.path.join(config.output_dir, "{config.source}_to_{config.target}.bin")
+            os.path.join(config.output_dir, f"{config.source}_to_{config.target}.bin")
         )
-        model.load_state_dict(checkpoint["model_state_dict"])
-        optimizer.optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
+        model.load_state_dict(torch.load(f"{config.output_dir}/{config.source}_to_{config.target}.bin"))
 
     min_loss = 99999
     train_loss_list = []
@@ -264,6 +263,5 @@ if __name__ == "__main__":
     with open(file_path, "wb") as file:
         pickle.dump(target_vocab, file)
         print(f'Vocab successfully saved to "{file_path}"')
-
     # train model
     trainstate, train_loss_list, test_loss_list = training(config)

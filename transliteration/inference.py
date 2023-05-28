@@ -1,6 +1,6 @@
 import torch
 import pickle
-from  models.model import TransformerModel
+from models.model import TransformerModel
 import os
 import yaml
 from models.model import TransformerConfig
@@ -15,7 +15,6 @@ def transliterate(text):
         text (str): sentence to transliterate"""
 
     model.eval()
-
     input = (
         torch.LongTensor([source_vocab.char2index[i] for i in text])
         .unsqueeze(-1)
@@ -23,13 +22,11 @@ def transliterate(text):
     )
 
     preds = [config.SOS_token]
-
+    src = model.encoder_embd(input)
+    src = model.pos_enc_embd(src)
     # the model will keep predicting until it predicts an EOS token
     while preds[-1] != config.EOS_token:
         tgt = torch.Tensor(preds).unsqueeze(-1).long().to(device)
-
-        src = model.encoder_embd(input)
-        src = model.pos_enc_embd(src)
 
         tgt = model.decoder_embd(tgt)
         tgt = model.pos_dec_embd(tgt)
@@ -95,7 +92,6 @@ if __name__ == "__main__":
 
     # -------------------------------------------------------------------------------------------------------------
     # The text should be in the source language (arabizi or arabic) we wont check for that here for simplicity sake
-
     text = input("Enter the text to transliterate: ")  # we get the text from the user
 
     # we need to preprocess the text before feeding it to the model
@@ -106,7 +102,7 @@ if __name__ == "__main__":
     else:
         assert False, f"The text is not in the {config.source} language"
 
-    transliterated = transliterate(preprocessed_text)
+    transliterated = transliterate(text)
     print("Original text: ", text)
     print("Preprocessed text: ", preprocessed_text)
     print("Transliterated text: ", transliterated)

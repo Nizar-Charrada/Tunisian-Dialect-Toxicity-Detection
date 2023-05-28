@@ -172,7 +172,6 @@ def multidialect_predict(text, threshold=0.5):
         arabizi_proba = predict(arabizi_model, arabizi_tokenizer, arabizi_text)
 
         # arabizi to arabic transliterated text
-        print(arabizi_text)
         arabizi_to_arabic_proba = predict(
             arabic_model, arabic_tokenizer, sentence_to_arabic(arabizi_text)
         )
@@ -195,6 +194,7 @@ def multidialect_predict(text, threshold=0.5):
         arabic_proba = predict(arabic_model, arabic_tokenizer, arabic_text)
 
         # arabic to arabizi transliterated text
+        print(sentence_to_arabizi(arabic_text))
         arabic_to_arabizi_proba = predict(
             arabizi_model, arabizi_tokenizer, sentence_to_arabizi(arabic_text)
         )
