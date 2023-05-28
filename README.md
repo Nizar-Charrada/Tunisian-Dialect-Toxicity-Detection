@@ -12,12 +12,11 @@ This makes the model easier to deploy on various platforms with limited computat
 By leveraging knowledge distillation, we achieved a compact and efficient Tunisian dialect toxicity detection model that can be seamlessly deployed in real-world applications.
 
 ## Project Structure:
-    .
-    ├── src                          # This directory contains the source code for data preprocessing, model training, and evaluation.
-    │   ├── transliteration          # This directory contains multiple scripts used to train the transliteration model
-    │   ├── toxic_detection          # This directory contains multiple scripts used to train the toxicity detection model
-    │   └── ensembling.py            # Python script for model ensembling (Arabic model and Arabizi model)
-    └── docs
+    .                               
+    ├── transliteration          # This directory contains multiple scripts used to train the transliteration model
+    ├── toxic_detection          # This directory contains multiple scripts used to train the toxicity detection model
+    └── ensembling.py            # Python script for model ensembling (Arabic model and Arabizi model)
+    
     
 ### Transliteration/Toxic_detection Structure:
 
@@ -66,11 +65,11 @@ To switch to transliteration using Arabizi-to-Arabic (Arabizi-Arabic), perform t
 ### Toxic Detection
 To utilize the Toxic Detection module, take the following steps:
 1. Set the `knowledge_distillation_enabled` parameter in the configuration file to `False` to get the teacher model.
-2. Run the train script for both arabic and arabizi to get the teacher models.
+2. Run the train script for both arabic and arabizi (change config path in script) to get the teacher models.
 
 For knowledge distillation-enabled models, perform the following:
 1. Set the `knowledge_distillation_enabled` parameter in the configuration file to `True`.
-2. Run train script for arabic and arabizi to get the student models.
+2. Run train script for arabic and arabizi (change config path in script) to get the student models.
 
 ### Ensembling
 To test all the models together, run the `ensembling.py` script. It will perform evaluation and generate results using all available models.
