@@ -112,7 +112,7 @@ def preprocess_arabizi(word):
     word = word.replace("0", "")
     word = word.replace("6", "")
     word = word.lower()
-    # word = my_unidecode(word)  # Remove accents
+    word = my_unidecode(word)  # Remove accents
     # Remove '@name'
     word = re.sub(r"(@.*?)[\s]", " ", word)
     # Replace '&amp;' with '&'
@@ -151,9 +151,9 @@ def preprocess_arabic(word):
     word = "".join(
         mapping.get(c, c) for c in word
     )  # Replace arabic non general characters exemple: 'ء' -> 'ا'
-    # word = "".join(
-    #    char for char, _ in itertools.groupby(word)
-    # )  # Remove repeating characters
+    word = "".join(
+        char for char, _ in itertools.groupby(word)
+     )  # Remove repeating characters
 
     return word
 

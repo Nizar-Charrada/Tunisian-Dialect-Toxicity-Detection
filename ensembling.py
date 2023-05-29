@@ -3,8 +3,10 @@ import os
 import pyarabic.araby as araby
 import pickle
 from transliteration.models.model import TransformerConfig, TransformerModel
-from toxic_detection.utils import ParamsNamespace, load_config
+from toxic_detection.utils import ParamsNamespace, load_config, remove_stop_words
 from toxic_detection.models.model import StudentModel
+from toxic_detection.data.arabic.stop_words import arabic_stop_words
+from toxic_detection.data.arabizi.stop_words import arabizi_stop_words
 from transliteration.dataloader.preprocess import (
     preprocess_arabic,
     preprocess_arabizi,
@@ -161,6 +163,8 @@ def multidialect_predict(text, threshold=0.5):
     text = preprocess(text)
     text = preprocess_arabic(text)
     text = preprocess_arabizi(text)
+    text = remove_stop_words(text, arabic_stop_words)
+    text = remove_stop_words(text, arabizi_stop_words)
 
     arabizi_text, arabic_text = extract_text(text)
     arabizi_proba = 0
@@ -194,7 +198,7 @@ def multidialect_predict(text, threshold=0.5):
         arabic_proba = predict(arabic_model, arabic_tokenizer, arabic_text)
 
         # arabic to arabizi transliterated text
-        print(sentence_to_arabizi(arabic_text))
+    
         arabic_to_arabizi_proba = predict(
             arabizi_model, arabizi_tokenizer, sentence_to_arabizi(arabic_text)
         )
@@ -210,6 +214,10 @@ def multidialect_predict(text, threshold=0.5):
             % arabic_to_arabizi_proba.item()
         )
         print("Full text transliteration probability: %.2f" % mixed_zied_proba.item())
+    
+    if len(arabizi_text) and len(arabic_text):
+        pred_proba = mixed_zied_proba * 0.5 + mixed_tunbert_proba * 0.5
+        print("Final probability: %.2f" % pred_proba.item())
 
 
 if __name__ == "__main__":
