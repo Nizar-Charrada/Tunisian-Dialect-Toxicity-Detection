@@ -220,6 +220,7 @@ if __name__ == "__main__":
     testdata = TransData(
         testset, config.source, source_vocab, config.target, target_vocab
     )
+    
     # create dataloader for train and test
     train_loader = DataLoader(
         traindata,

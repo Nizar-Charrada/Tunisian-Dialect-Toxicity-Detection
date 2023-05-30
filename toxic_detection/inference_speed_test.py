@@ -76,11 +76,10 @@ def measure_model_performance(model, seq_len, batch_size, device, attention=Fals
 
 
 if __name__ == "__main__":
-    
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     # ----------------------------------------- -----------------------------------------#
-    config_path = "toxic_detection/config/arabizi_config.yaml"
+    config_path = "toxic_detection/config/arabic_config.yaml"
     batch_sizes = [32, 64]
     seq_lens = [10, 30, 70]
     # ----------------------------------------- -----------------------------------------#
@@ -95,7 +94,7 @@ if __name__ == "__main__":
 
     tokenizer = make_tokenizer(params)
     model_config = get_model_config(params)
-
+    
     print("Loading student model...")
     student_model = StudentModel(
         tokenizer.vocab_size,
@@ -105,12 +104,12 @@ if __name__ == "__main__":
     ).to(device)
 
     print("Loading teacher model...")
-    teacher_model = TeacherModel(params, model_config, freeze=False).to(device)
+    teacher_model = TeacherModel(params, model_config[0], freeze=False).to(device)
 
     student_n_params = student_model.get_num_params()
     teacher_n_params = teacher_model.get_num_params()
-  
-    param_size_bytes = np.dtype('float32').itemsize
+
+    param_size_bytes = np.dtype("float32").itemsize
 
     # Calculate the estimated size of the model in bytes
     teacher_size_bytes = teacher_n_params * param_size_bytes
@@ -123,7 +122,9 @@ if __name__ == "__main__":
     # Print the estimated size of the models in MB
     print(f"The estimated size of the teacher model is {teacher_size_mb:.2f} MB.")
     print(f"The estimated size of the student model is {student_size_mb:.2f} MB.")
-    print(f"The student model is {(student_size_mb / teacher_size_mb) * 100:.2f} times smaller than the teacher model.")
+    print(
+        f"The student model is {(student_size_mb / teacher_size_mb) * 100:.2f} times smaller than the teacher model."
+    )
 
     print("Loading models' weights...")
 
@@ -140,9 +141,9 @@ if __name__ == "__main__":
     student_model.load_state_dict(
         torch.load(
             os.path.join(
-            params.output_dir,
-            f"{params.model.language_model.model_type}-knowledge_distillation-checkpoint/best.bin",
-        )
+                params.output_dir,
+                f"{params.model.language_model.model_type}-knowledge_distillation-checkpoint/best.bin",
+            )
         )
     )
 

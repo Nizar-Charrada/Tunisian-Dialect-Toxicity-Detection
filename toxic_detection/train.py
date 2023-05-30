@@ -27,7 +27,7 @@ logging.set_verbosity_warning()
 logging.set_verbosity_error()
 
 # -----------------------------#
-config_path = "toxic_detection/config/arabizi_config.yaml"
+config_path = "toxic_detection/config/arabic_config.yaml"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # -----------------------------#
 
