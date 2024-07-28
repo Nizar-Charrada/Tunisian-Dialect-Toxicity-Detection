@@ -11,6 +11,9 @@ To optimize the model for deployment and resource efficiency, we applied knowled
 This makes the model easier to deploy on various platforms with limited computational resources.
 By leveraging knowledge distillation, we achieved a compact and efficient Tunisian dialect toxicity detection model that can be seamlessly deployed in real-world applications.
 
+## Prediction Pipeline:
+![diagram](diagram.png)
+
 ## Project Structure:
     .                               
     ├── transliteration          # This directory contains multiple scripts used to train the transliteration model
